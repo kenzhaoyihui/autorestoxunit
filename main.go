@@ -18,15 +18,34 @@ func main() {
 	v.Properties = []libs.Property{
 		libs.Property{
 			Name:  "polarion-testcase-id",
-			Value: "INTE-87",
-		},
-		libs.Property{
-			Name:  "polarion-testcase-id",
-			Value: "INTE-89",
+			Value: "RHEVM-17788",
 		},
 	}
+	ts := libs.TestSuite{}
+	ts.Tests = "2"
+	ts.Errors = "0"
+	ts.Failures = "0"
+	ts.Skipped = "0"
+	ts.TestCase = []libs.TestCase{
+		v,
+	}
 
-	output, err := xml.MarshalIndent(v, "  ", "  ")
+	tss := libs.TestSuites{}
+	tss.Properties = []libs.Property{
+		libs.Property{
+			Name:  "polarion-response-myteamsname",
+			Value: "rhvhqe",
+		},
+		libs.Property{
+			Name:  "polarion-project-id",
+			Value: "RHEVM3",
+		},
+	}
+	tss.TestSuite = []libs.TestSuite{
+		ts,
+	}
+
+	output, err := xml.MarshalIndent(tss, "  ", "  ")
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 	}
