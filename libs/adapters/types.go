@@ -1,4 +1,4 @@
-package libs
+package adapters
 
 import "encoding/xml"
 
