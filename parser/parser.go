@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/xml"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -34,7 +33,6 @@ type ParsedResult interface {
 
 func genTestCase(cases map[string]string) []TestCase {
 	testCases := []TestCase{}
-
 	for k, v := range cases {
 		tc := TestCase{}
 		tc.Name = k
@@ -72,7 +70,7 @@ func genTestSuites(projectID, title string) TestSuites {
 		},
 		Property{
 			Name:  "polarion-testrun-title",
-			Value: fmt.Sprintf("4_1_Node_Install_AutoTest_%s", title),
+			Value: title,
 		},
 	}
 	return tss

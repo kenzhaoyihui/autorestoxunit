@@ -8,6 +8,11 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+const (
+	projectID          = "RHEVM3"
+	testRunTitlePrefix = "4_1_Node_Install_AutoTest_"
+)
+
 // Zoidberg represent zoidberg test results
 type Zoidberg struct {
 	InputFile string
@@ -87,8 +92,8 @@ func (z Zoidberg) GenTestSuites() struct {
 		ProjectID string
 		Title     string
 	}{
-		"",
-		fmt.Sprintf("4_1_Node_Install_AutoTest_%s", z.BuildName[0]),
+		projectID,
+		fmt.Sprintf("%s%s", testRunTitlePrefix, z.BuildName[0]),
 	}
 }
 
