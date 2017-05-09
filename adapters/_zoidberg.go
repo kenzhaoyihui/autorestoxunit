@@ -110,6 +110,5 @@ func (z ZoidbergAdapter) GenTestSuites() TestSuites {
 			Value: fmt.Sprintf("4_1_Node_Install_AutoTest_%s", z.BuildName[0]),
 		},
 	}
-
 	return tss
 }

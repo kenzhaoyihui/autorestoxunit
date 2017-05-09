@@ -1,17 +1,25 @@
 package main
 
 import (
-	"github.com/dracher/autorestoxunit/libs"
-	"github.com/dracher/autorestoxunit/libs/adapters"
+	"flag"
+
+	"github.com/dracher/autorestoxunit/adapters"
+)
+
+var (
+	credential = flag.String("c", "rhevm3_machine:polarion", "credential to use xunit importer")
+	file       = flag.String("f", "/tmp/final_results.json", "results to upload, currently support .json")
 )
 
 const (
-	username  = "rhevm3_machine"
-	password  = "polarion"
 	uploadURL = "curl -k -u '%s:%s' -X POST -F file=@./%s https://polarion.engineering.redhat.com/polarion/import/xunit"
 )
 
+func init() {
+	flag.Parse()
+}
+
 func main() {
-	v := adapters.NewZoidbergAdapter("/tmp/final_results.json")
-	libs.RawToXunit(v)
+	r := adapters.NewZoidberg(*file)
+	r.PrintSelf()
 }

@@ -6,7 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	ap "github.com/dracher/autorestoxunit/libs/adapters"
+	ap "github.com/dracher/autorestoxunit/adapters"
 )
 
 func debugOutput(r ap.TestSuites) {
