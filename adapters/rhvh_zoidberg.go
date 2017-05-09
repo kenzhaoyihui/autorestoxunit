@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
@@ -11,14 +12,12 @@ import (
 type Zoidberg struct {
 	InputFile string
 	details   map[string]map[string]map[string]string
-	Summary   struct {
-		Build     string
-		Error     int
-		Errorlist []string
-		Failed    string
-		Passed    int
-		Total     int
-	} `json:"sum"`
+	FlatCases map[string]string
+	BuildName []string
+	KsFiles   []string
+	Total     int
+	Passed    int
+	Failed    int
 }
 
 // NewZoidberg is
@@ -26,16 +25,10 @@ func NewZoidberg(inputFile string) *Zoidberg {
 	z := &Zoidberg{
 		InputFile: inputFile,
 		details:   make(map[string]map[string]map[string]string),
-		Summary: struct {
-			Build     string
-			Error     int
-			Errorlist []string
-			Failed    string
-			Passed    int
-			Total     int
-		}{},
+		FlatCases: make(map[string]string),
 	}
 	z.parseInputFile()
+	z.getSummary()
 	return z
 }
 
@@ -47,7 +40,60 @@ func (z *Zoidberg) parseInputFile() {
 	json.Unmarshal(fp, &z.details)
 }
 
-// PrintSelf is
-func (z Zoidberg) PrintSelf() {
-	log.Info(z.details)
+func (z *Zoidberg) getSummary() {
+	for b, v := range z.details {
+		z.BuildName = append(z.BuildName, b)
+		for ks, vv := range v {
+			z.KsFiles = append(z.KsFiles, ks)
+			for k, vvv := range vv {
+				z.FlatCases[k] = vvv
+				if vvv == "passed" {
+					z.Passed++
+				} else {
+					z.Failed++
+				}
+			}
+		}
+	}
+	z.Total = len(z.FlatCases)
+}
+
+// GenTestCases is
+func (z Zoidberg) GenTestCases() map[string]string {
+	return z.FlatCases
+}
+
+// GenTestSuite is
+func (z Zoidberg) GenTestSuite() struct {
+	Tests    int
+	Errors   int
+	Failures int
+	Skipped  int
+} {
+	return struct {
+		Tests    int
+		Errors   int
+		Failures int
+		Skipped  int
+	}{z.Total, 0, z.Failed, 0}
+}
+
+// GenTestSuites is
+func (z Zoidberg) GenTestSuites() struct {
+	ProjectID string
+	Title     string
+} {
+	return struct {
+		ProjectID string
+		Title     string
+	}{
+		"",
+		fmt.Sprintf("4_1_Node_Install_AutoTest_%s", z.BuildName[0]),
+	}
+}
+
+// DebugSelf is
+func (z *Zoidberg) DebugSelf() {
+	log.Info(z.GenTestSuite().Tests)
+	log.Info(z.GenTestSuites().Title)
 }

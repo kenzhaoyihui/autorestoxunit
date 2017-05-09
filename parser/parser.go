@@ -1,15 +1,15 @@
-package libs
+package parser
 
 import (
 	"encoding/xml"
+	"fmt"
 	"os"
+	"strconv"
 
 	log "github.com/Sirupsen/logrus"
-
-	ap "github.com/dracher/autorestoxunit/adapters"
 )
 
-func debugOutput(r ap.TestSuites) {
+func debugOutput(r TestSuites) {
 	output, err := xml.MarshalIndent(r, "  ", "  ")
 	if err != nil {
 		log.Panic(err)
@@ -17,19 +17,77 @@ func debugOutput(r ap.TestSuites) {
 	os.Stdout.Write(output)
 }
 
-type RawResults interface {
-	GenTestCases() []ap.TestCase
-	GenTestSuite() ap.TestSuite
-	GenTestSuites() ap.TestSuites
+// ParsedResult is
+type ParsedResult interface {
+	GenTestCases() map[string]string
+	GenTestSuite() struct {
+		Tests    int
+		Errors   int
+		Failures int
+		Skipped  int
+	}
+	GenTestSuites() struct {
+		ProjectID string
+		Title     string
+	}
 }
 
-func RawToXunit(val RawResults) {
-	testCases := val.GenTestCases()
-	testSuite := val.GenTestSuite()
-	testSuites := val.GenTestSuites()
+func genTestCase(cases map[string]string) []TestCase {
+	testCases := []TestCase{}
 
-	testSuite.TestCase = testCases
-	testSuites.TestSuite = []ap.TestSuite{testSuite}
+	for k, v := range cases {
+		tc := TestCase{}
+		tc.Name = k
+		tc.SystemOut = v
+		tc.Properties = []Property{
+			Property{
+				Name:  "polarion-testcase-id",
+				Value: k,
+			},
+		}
+		testCases = append(testCases, tc)
+	}
+	return testCases
+}
 
-	debugOutput(testSuites)
+func genTestSuite(tests, errors, failures, skipped int) TestSuite {
+	ts := TestSuite{}
+	ts.Tests = strconv.Itoa(tests)
+	ts.Errors = strconv.Itoa(errors)
+	ts.Failures = strconv.Itoa(failures)
+	ts.Skipped = strconv.Itoa(skipped)
+	return ts
+}
+
+func genTestSuites(projectID, title string) TestSuites {
+	tss := TestSuites{}
+	tss.Properties = []Property{
+		Property{
+			Name:  "polarion-response-myteamsname",
+			Value: "rhvh-auto-team",
+		},
+		Property{
+			Name:  "polarion-project-id",
+			Value: projectID,
+		},
+		Property{
+			Name:  "polarion-testrun-title",
+			Value: fmt.Sprintf("4_1_Node_Install_AutoTest_%s", title),
+		},
+	}
+	return tss
+}
+
+// RawToXunit is
+func RawToXunit(val ParsedResult) {
+	tc := genTestCase(val.GenTestCases())
+	tmp := val.GenTestSuite()
+	ts := genTestSuite(tmp.Tests, tmp.Errors, tmp.Failures, tmp.Skipped)
+	tmp2 := val.GenTestSuites()
+	tss := genTestSuites(tmp2.ProjectID, tmp2.Title)
+
+	ts.TestCase = tc
+	tss.TestSuite = []TestSuite{ts}
+
+	debugOutput(tss)
 }
