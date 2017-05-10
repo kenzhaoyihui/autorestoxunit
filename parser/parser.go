@@ -2,18 +2,18 @@ package parser
 
 import (
 	"encoding/xml"
-	"os"
+	"fmt"
 	"strconv"
 
 	log "github.com/Sirupsen/logrus"
 )
 
-func debugOutput(r TestSuites) {
+func marshalResult(r TestSuites) []byte {
 	output, err := xml.MarshalIndent(r, "  ", "  ")
 	if err != nil {
 		log.Panic(err)
 	}
-	os.Stdout.Write(output)
+	return output
 }
 
 // ParsedResult is
@@ -33,6 +33,7 @@ type ParsedResult interface {
 
 func genTestCase(cases map[string]string) []TestCase {
 	testCases := []TestCase{}
+
 	for k, v := range cases {
 		tc := TestCase{}
 		tc.Name = k
@@ -70,14 +71,14 @@ func genTestSuites(projectID, title string) TestSuites {
 		},
 		Property{
 			Name:  "polarion-testrun-title",
-			Value: title,
+			Value: fmt.Sprintf("4_1_Node_Install_AutoTest_%s", title),
 		},
 	}
 	return tss
 }
 
 // RawToXunit is
-func RawToXunit(val ParsedResult) {
+func RawToXunit(val ParsedResult) []byte {
 	tc := genTestCase(val.GenTestCases())
 	tmp := val.GenTestSuite()
 	ts := genTestSuite(tmp.Tests, tmp.Errors, tmp.Failures, tmp.Skipped)
@@ -87,5 +88,5 @@ func RawToXunit(val ParsedResult) {
 	ts.TestCase = tc
 	tss.TestSuite = []TestSuite{ts}
 
-	debugOutput(tss)
+	return marshalResult(tss)
 }
