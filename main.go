@@ -1,8 +1,8 @@
 package main
 
 import (
-	"crypto/tls"
 	"flag"
+	"os/exec"
 
 	log "github.com/Sirupsen/logrus"
 
@@ -10,9 +10,7 @@ import (
 
 	"io/ioutil"
 
-	"net/http"
-
-	"strings"
+	"fmt"
 
 	"github.com/dracher/autorestoxunit/adapters"
 	"github.com/dracher/autorestoxunit/parser"
@@ -27,6 +25,7 @@ var (
 )
 
 const (
+	uploadCMD = "curl -k -u '%s' -X POST -F file=@%s %s"
 	uploadURL = "https://polarion.engineering.redhat.com/polarion/import/xunit"
 )
 
@@ -36,43 +35,17 @@ func init() {
 
 func uploadToPolarion(content []byte) {
 	log.Infof("Start upload %s result to polarion with <%s>", *resultType, *credential)
-	resfile, err := ioutil.TempFile("/tmp", "xunit")
+	if err := ioutil.WriteFile("/tmp/xres.xml", content, 0644); err != nil {
+		log.Fatal(err)
+	}
+	cmd := fmt.Sprintf(uploadCMD, *credential, "/tmp/xres.xml", uploadURL)
+
+	stdoutStderr, err := exec.Command("sh", "-c", cmd).CombinedOutput()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer os.Remove(resfile.Name())
+	fmt.Printf("%s\n", stdoutStderr)
 
-	if _, err := resfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
-	if err := resfile.Close(); err != nil {
-		log.Fatal(err)
-	}
-
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	client := &http.Client{Transport: tr}
-
-	req, err := http.NewRequest("POST", uploadURL, resfile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	cred := strings.Split(*credential, ":")
-	req.SetBasicAuth(cred[0], cred[1])
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	os.Stdout.Write(data)
 }
 
 func main() {

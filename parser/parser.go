@@ -31,20 +31,37 @@ type ParsedResult interface {
 	}
 }
 
-func genTestCase(cases map[string]string) []TestCase {
-	testCases := []TestCase{}
+func genTestCase(cases map[string]string) []interface{} {
+	testCases := []interface{}{}
 
 	for k, v := range cases {
-		tc := TestCase{}
-		tc.Name = k
-		tc.SystemOut = v
-		tc.Properties = []Property{
-			Property{
-				Name:  "polarion-testcase-id",
-				Value: k,
-			},
+		if v == "failed" {
+			tc := TestCaseFailed{}
+			tc.Name = k
+			tc.SystemOut = v
+			tc.Properties = []Property{
+				Property{
+					Name:  "polarion-testcase-id",
+					Value: k,
+				},
+			}
+			tc.FailedTestCase = FailedTestCase{
+				Type:    "failure",
+				Message: fmt.Sprintf("case %s is failed, please check the log to see details", k),
+			}
+			testCases = append(testCases, tc)
+		} else {
+			tc := TestCase{}
+			tc.Name = k
+			tc.SystemOut = v
+			tc.Properties = []Property{
+				Property{
+					Name:  "polarion-testcase-id",
+					Value: k,
+				},
+			}
+			testCases = append(testCases, tc)
 		}
-		testCases = append(testCases, tc)
 	}
 	return testCases
 }
