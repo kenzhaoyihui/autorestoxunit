@@ -2,7 +2,6 @@ package adapters
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
@@ -13,16 +12,24 @@ const (
 	testRunTitlePrefix = "4_1_Node_Install_AutoTest_"
 )
 
+// ResultSum is
+type ResultSum struct {
+	Sum struct {
+		Title string `json:"title"`
+	} `json:"sum"`
+}
+
 // Zoidberg represent zoidberg test results
 type Zoidberg struct {
-	InputFile string
-	details   map[string]map[string]map[string]string
-	FlatCases map[string]string
-	BuildName []string
-	KsFiles   []string
-	Total     int
-	Passed    int
-	Failed    int
+	InputFile   string
+	details     map[string]map[string]map[string]string
+	FlatCases   map[string]string
+	BuildName   []string
+	KsFiles     []string
+	Total       int
+	Passed      int
+	Failed      int
+	ReportTitle string
 }
 
 // NewZoidberg is
@@ -34,6 +41,7 @@ func NewZoidberg(inputFile string) *Zoidberg {
 	}
 	z.parseInputFile()
 	z.getSummary()
+	z.getReportTitle()
 	return z
 }
 
@@ -43,6 +51,16 @@ func (z *Zoidberg) parseInputFile() {
 		log.Panic(err)
 	}
 	json.Unmarshal(fp, &z.details)
+}
+
+func (z *Zoidberg) getReportTitle() {
+	fp, err := ioutil.ReadFile(z.InputFile)
+	if err != nil {
+		log.Panic(err)
+	}
+	sum := ResultSum{}
+	json.Unmarshal(fp, &sum)
+	z.ReportTitle = sum.Sum.Title
 }
 
 func (z *Zoidberg) getSummary() {
@@ -93,7 +111,7 @@ func (z Zoidberg) GenTestSuites() struct {
 		Title     string
 	}{
 		projectID,
-		fmt.Sprintf("%s%s", testRunTitlePrefix, z.BuildName[0]),
+		z.ReportTitle,
 	}
 }
 

@@ -88,7 +88,7 @@ func genTestSuites(projectID, title string) TestSuites {
 		},
 		Property{
 			Name:  "polarion-testrun-title",
-			Value: fmt.Sprintf("4_1_Node_Install_AutoTest_%s", title),
+			Value: title,
 		},
 	}
 	return tss
