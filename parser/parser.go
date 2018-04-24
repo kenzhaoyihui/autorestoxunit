@@ -25,7 +25,7 @@ type ParsedResult interface {
 		Failures int
 		Skipped  int
 	}
-	GenTestSuites() struct {
+	GenTestSuites(projectID string) struct {
 		ProjectID string
 		Title     string
 	}
@@ -95,11 +95,11 @@ func genTestSuites(projectID, title string) TestSuites {
 }
 
 // RawToXunit is
-func RawToXunit(val ParsedResult) []byte {
+func RawToXunit(val ParsedResult, projectID string) []byte {
 	tc := genTestCase(val.GenTestCases())
 	tmp := val.GenTestSuite()
 	ts := genTestSuite(tmp.Tests, tmp.Errors, tmp.Failures, tmp.Skipped)
-	tmp2 := val.GenTestSuites()
+	tmp2 := val.GenTestSuites(projectID)
 	tss := genTestSuites(tmp2.ProjectID, tmp2.Title)
 
 	ts.TestCase = tc

@@ -7,11 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	projectID          = "RHEVM3"
-	testRunTitlePrefix = "4_1_Node_Install_AutoTest_"
-)
-
 // ResultSum is
 type ResultSum struct {
 	Sum struct {
@@ -102,7 +97,7 @@ func (z Zoidberg) GenTestSuite() struct {
 }
 
 // GenTestSuites is
-func (z Zoidberg) GenTestSuites() struct {
+func (z Zoidberg) GenTestSuites(projectID string) struct {
 	ProjectID string
 	Title     string
 } {
@@ -113,10 +108,4 @@ func (z Zoidberg) GenTestSuites() struct {
 		projectID,
 		z.ReportTitle,
 	}
-}
-
-// DebugSelf is
-func (z *Zoidberg) DebugSelf() {
-	log.Info(z.GenTestSuite().Tests)
-	log.Info(z.GenTestSuites().Title)
 }

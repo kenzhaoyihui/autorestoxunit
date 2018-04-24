@@ -20,6 +20,7 @@ var (
 	credential = flag.String("c", "rhevm3_machine:polarion", "default credential can only upload res to project RHEVM3")
 	file       = flag.String("f", "/tmp/final_results.json", "results to upload, currently support .json")
 	resultType = flag.String("t", "zoidberg", "raw results type cuurent support { zoidberg | cockpit }")
+	projectID  = flag.String("p", "RHEVM3", "polarion project id, default is RHEVM3")
 	upload     = flag.Bool("up", false, "upload to polarion immediately")
 	adapter    parser.ParsedResult
 )
@@ -52,11 +53,11 @@ func main() {
 	if *resultType == "zoidberg" {
 		adapter = adapters.NewZoidberg(*file)
 	} else if *resultType == "cockpit" {
-		log.Fatal("not finish yet")
+		adapter = adapters.NewCockpit(*file)
 	} else {
 		log.Panic("Ezzzz")
 	}
-	res := parser.RawToXunit(adapter)
+	res := parser.RawToXunit(adapter, *projectID)
 
 	if *upload {
 		uploadToPolarion(res)
