@@ -1,0 +1,15 @@
+{
+  "title": "cockpit-ovirt-dashboard-11-33_rhvh-4.2.6.0-0.20180828_he_tier1_chrome",
+  "results": {
+    "RHEVM-23815": "passed",
+    "RHEVM-24594": "passed",
+    "RHEVM-23817": "passed",
+    "RHEVM-23833": "passed",
+    "RHEVM-23832": "passed",
+    "RHEVM-23816": "passed",
+    "RHEVM-23826": "passed",
+    "RHEVM-23829": "passed",
+    "RHEVM-23827": "passed",
+    "RHEVM-23828": "passed"
+  }
+}

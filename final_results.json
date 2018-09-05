@@ -1,0 +1,73 @@
+{
+  "redhat-virtualization-host-4.2-20180828.2.el7_5": {
+    "ati_fc_01.ks": {
+      "RHEVM-23950": "passed",
+      "RHEVM-24167": "passed",
+      "RHEVM-23945": "passed",
+      "RHEVM-23911": "passed",
+      "RHEVM-24162": "passed"
+    },
+    "ati_fc_02.ks": {
+      "RHEVM-24168": "passed",
+      "RHEVM-24192": "passed"
+    },
+    "ati_iscsi_01.ks": {
+      "RHEVM-23938": "passed",
+      "RHEVM-23919": "passed",
+      "RHEVM-24689": "passed",
+      "RHEVM-23930": "passed",
+      "RHEVM-23948": "passed",
+      "RHEVM-23942": "passed",
+      "RHEVM-24163": "passed"
+    },
+    "ati_iscsi_02.ks": {
+      "RHEVM-23902": "passed",
+      "RHEVM-23939": "passed",
+      "RHEVM-24690": "passed",
+      "RHEVM-23923": "passed",
+      "RHEVM-23924": "passed",
+      "RHEVM-23925": "passed",
+      "RHEVM-23912": "passed",
+      "RHEVM-23895": "passed",
+      "RHEVM-23947": "passed",
+      "RHEVM-23943": "passed",
+      "RHEVM-23940": "passed"
+    },
+    "ati_local_01.ks": {
+      "RHEVM-23897": "passed",
+      "RHEVM-23899": "passed",
+      "RHEVM-23896": "passed",
+      "RHEVM-23904": "passed",
+      "RHEVM-24161": "passed",
+      "RHEVM-23909": "passed",
+      "RHEVM-24195": "passed",
+      "RHEVM-23944": "passed",
+      "RHEVM-23882": "passed",
+      "RHEVM-23892": "passed",
+      "RHEVM-23886": "passed",
+      "RHEVM-23885": "passed",
+      "RHEVM-23884": "passed",
+      "RHEVM-24186": "passed",
+      "RHEVM-23889": "passed",
+      "RHEVM-23941": "passed",
+      "RHEVM-23955": "passed",
+      "RHEVM-23954": "passed",
+      "RHEVM-23949": "passed"
+    },
+    "ati_local_02.ks": {
+      "RHEVM-23901": "passed",
+      "RHEVM-23888": "passed",
+      "RHEVM-23907": "passed",
+      "RHEVM-23905": "passed"
+    }
+  },
+  "sum": {
+    "title": "4_2_Node_Install_AutoTest_rhvh-4.2-20180828.2.el7_5",
+    "log_url": "http://10.73.73.23:7788/2018-08-29/11-02-50/redhat-virtualization-host-4.2-20180828.2.el7_5",
+    "total": 48,
+    "passed": 48,
+    "failed": 0,
+    "error": 0,
+    "errorlist": []
+  }
+}
