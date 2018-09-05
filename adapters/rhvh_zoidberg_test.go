@@ -7,6 +7,6 @@ import (
 
 func TestGetSummary(t *testing.T) {
 	z := NewZoidberg("../final_results.json")
-	r := z.GenTestSuites()
+	r := z.GenTestSuites("RHEVM3")
 	fmt.Println(r)
 }
